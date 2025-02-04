@@ -1,35 +1,109 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect, useState } from 'react';  
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged } from 'firebase/auth'; 
+import Register from './pages/admin/AdminRegisterPage.jsx';
+import Login from './pages/admin/LoginPage.jsx';
+import AdminNavbar from './components/AdminNavbar.jsx';
+import AdminDashboard from './pages/admin/AdminDashboard.jsx';
+import ManageAccommodations from './pages/admin/ManageAccommodations.jsx';
+import ManageRoom from './pages/admin/ManageRoom.jsx';
+import ManageBookings from './pages/admin/ManageBookings.jsx';
 
-function App() {
-  const [count, setCount] = useState(0)
+//import ProfilePage from './pages/admin/AdminProfile.jsx';  
+
+const App = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Router>
+      <Routes>
+        {/* Authentication Routes */}
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
 
-export default App
+        {/* Admin Routes */}
+        <Route 
+          path="/dashboard" 
+          element={user ? (
+            <>
+              <AdminNavbar />
+              <AdminDashboard />
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )}
+        />
+        <Route 
+          path="/manage-accommodations" 
+          element={user ? (
+            <>
+              <AdminNavbar />
+              <ManageAccommodations />
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )}
+        />
+        <Route 
+          path="/manage-rooms" 
+          element={user ? (
+            <>
+              <AdminNavbar />
+              <ManageRoom />
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )}
+        />
+        <Route 
+          path="/manage-bookings" 
+          element={user ? (
+            <>
+              <AdminNavbar />
+              <ManageBookings />
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )}
+        />
+        
+
+        {/*   <Route 
+          path="/profile" 
+          element={user ? (
+            <>
+              <AdminNavbar />
+              <ProfilePage />
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )}
+        /> */}
+     
+
+        {/* Default route */}
+        <Route 
+          path="/" 
+          element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />}
+        />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
