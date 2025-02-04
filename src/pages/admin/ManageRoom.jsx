@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRooms, addRoom, editRoom, deleteRoom } from '../../redux/roomSlice.js';
-import { Button, Form, Col, Row } from 'react-bootstrap';
+import { Button, Form, Col, Row, Card, Container } from 'react-bootstrap';
 
 const ManageRoom = () => {
   const dispatch = useDispatch();
@@ -90,229 +90,155 @@ const ManageRoom = () => {
     setFormData((prev) => ({ ...prev, amenities }));
   };
 
-  // Inline styles
-  const styles = {
-    container: {
-      padding: '20px',
-      fontFamily: 'Arial, sans-serif',
-      backgroundColor: '#f9f9f9',
-    },
-    header: {
-      marginBottom: '20px',
-      color: '#004AAD',
-    },
-    formGroup: {
-      marginBottom: '15px',
-    },
-    formLabel: {
-      color: '#004AAD',
-      fontWeight: 'bold',
-    },
-    formControl: {
-      border: '1px solid #004AAD',
-      borderRadius: '5px',
-    },
-    formControlReadonly: {
-      backgroundColor: '#e9ecef',
-    },
-    submitButton: {
-      backgroundColor: '#004AAD',
-      border: 'none',
-      color: 'white',
-      padding: '10px 20px',
-      borderRadius: '5px',
-      cursor: 'pointer',
-    },
-    submitButtonHover: {
-      backgroundColor: '#003d7a',
-    },
-    imagePreview: {
-      marginTop: '10px',
-    },
-    imagePreviewImg: {
-      marginRight: '10px',
-      borderRadius: '5px',
-    },
-    errorMessage: {
-      color: '#FF0000',
-    },
-    loadingMessage: {
-      color: '#004AAD',
-    },
-    roomList: {
-      marginTop: '20px',
-    },
-    roomItem: {
-      borderBottom: '1px solid #ddd',
-      padding: '10px 0',
-      marginBottom: '10px',
-    },
-    roomItemTitle: {
-      color: '#004AAD',
-    },
-    editButton: {
-      backgroundColor: '#007bff',
-      border: 'none',
-      color: 'white',
-      padding: '5px 10px',
-      borderRadius: '5px',
-      cursor: 'pointer',
-      marginRight: '5px',
-    },
-    deleteButton: {
-      backgroundColor: '#dc3545',
-      border: 'none',
-      color: 'white',
-      padding: '5px 10px',
-      borderRadius: '5px',
-      cursor: 'pointer',
-    },
-  };
-
   return (
-    <div style={styles.container}>
-      <h1 style={styles.header}>Manage Rooms</h1>
+    <Container className="mt-5">
+      <h1 className="text-center mb-4">Manage Rooms</h1>
       <Form onSubmit={handleSubmit}>
-        <Form.Group as={Row} style={styles.formGroup}>
-          <Form.Label column sm={2} style={styles.formLabel}>Name</Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              style={styles.formControl}
-            />
+        <Row>
+          <Col sm={6}>
+            <Form.Group controlId="formName">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
           </Col>
-        </Form.Group>
-        <Form.Group as={Row} style={styles.formGroup}>
-          <Form.Label column sm={2} style={styles.formLabel}>Description</Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              as="textarea"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              required
-              style={{ ...styles.formControl, ...styles.formControlReadonly }}
-            />
+          <Col sm={6}>
+            <Form.Group controlId="formRoomType">
+              <Form.Label>Room Type</Form.Label>
+              <Form.Control
+                as="select"
+                name="roomType"
+                value={formData.roomType}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select...</option>
+                <option value="Standard">Standard</option>
+                <option value="Deluxe">Deluxe</option>
+                <option value="Suite">Suite</option>
+              </Form.Control>
+            </Form.Group>
           </Col>
-        </Form.Group>
-        <Form.Group as={Row} style={styles.formGroup}>
-          <Form.Label column sm={2} style={styles.formLabel}>Capacity</Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="number"
-              name="capacity"
-              value={formData.capacity}
-              onChange={handleInputChange}
-              required
-              style={styles.formControl}
-            />
+        </Row>
+        <Row>
+          <Col sm={6}>
+            <Form.Group controlId="formDescription">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
           </Col>
-        </Form.Group>
-        <Form.Group as={Row} style={styles.formGroup}>
-          <Form.Label column sm={2} style={styles.formLabel}>Price</Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleInputChange}
-              required
-              style={styles.formControl}
-            />
+          <Col sm={6}>
+            <Form.Group controlId="formCapacity">
+              <Form.Label>Capacity</Form.Label>
+              <Form.Control
+                type="number"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
           </Col>
-        </Form.Group>
-        <Form.Group as={Row} style={styles.formGroup}>
-          <Form.Label column sm={2} style={styles.formLabel}>Amenities</Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              name="amenities"
-              value={formData.amenities}
-              onChange={handleInputChange}
-              readOnly
-              style={{ ...styles.formControl, ...styles.formControlReadonly }}
-            />
+        </Row>
+        <Row>
+          <Col sm={6}>
+            <Form.Group controlId="formPrice">
+              <Form.Label>Price</Form.Label>
+              <Form.Control
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
           </Col>
-        </Form.Group>
-        <Form.Group as={Row} style={styles.formGroup}>
-          <Form.Label column sm={2} style={styles.formLabel}>Room Type</Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              as="select"
-              name="roomType"
-              value={formData.roomType}
-              onChange={handleInputChange}
-              required
-              style={styles.formControl}
-            >
-              <option value="">Select...</option>
-              <option value="Standard">Standard</option>
-              <option value="Deluxe">Deluxe</option>
-              <option value="Suite">Suite</option>
-            </Form.Control>
+          <Col sm={6}>
+            <Form.Group controlId="formAmenities">
+              <Form.Label>Amenities</Form.Label>
+              <Form.Control
+                type="text"
+                name="amenities"
+                value={formData.amenities}
+                readOnly
+              />
+            </Form.Group>
           </Col>
-        </Form.Group>
-        <Form.Group as={Row} style={styles.formGroup}>
-          <Form.Label column sm={2} style={styles.formLabel}>Images</Form.Label>
-          <Col sm={10}>
-            <Form.Control
-              type="file"
-              name="imageFiles"
-              multiple
-              onChange={handleFileChange}
-              style={styles.formControl}
-            />
+        </Row>
+        <Row>
+          <Col sm={12}>
+            <Form.Group controlId="formImages">
+              <Form.Label>Images</Form.Label>
+              <Form.Control
+                type="file"
+                name="imageFiles"
+                multiple
+                onChange={handleFileChange}
+              />
+            </Form.Group>
           </Col>
-        </Form.Group>
-        <Button
-          variant="primary"
-          type="submit"
-          style={styles.submitButton}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.submitButtonHover.backgroundColor}
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.submitButton.backgroundColor}
-        >
+        </Row>
+        <Button variant="primary" type="submit" className="mt-3">
           {editingId ? 'Update Room' : 'Add Room'}
         </Button>
       </Form>
 
-      {loading && <p style={styles.loadingMessage}>Loading...</p>}
-      {error && <p style={styles.errorMessage}>Error: {error}</p>}
-      <div style={styles.roomList}>
-        {rooms.map((room) => (
-          <div key={room.id} style={styles.roomItem}>
-            <h3 style={styles.roomItemTitle}>{room.name}</h3>
-            <p>{room.description}</p>
-            <p>Capacity: {room.capacity}</p>
-            <p>Price: R{room.price}</p>
-            <p>Amenities: {room.amenities}</p>
-            <p>Type: {room.roomType}</p>
-            {room.imageUrls && room.imageUrls.length > 0 && (
-              <div style={styles.imagePreview}>
-                {room.imageUrls.map((url, index) => (
-                  <img key={index} src={url} alt={`Room ${room.name}`} style={styles.imagePreviewImg} />
+      {loading && <p className="text-primary mt-3">Loading...</p>}
+      {error && <p className="text-danger mt-3">Error: {error}</p>}
+
+      <h3 className="mt-4">Rooms</h3>
+      <div>
+        {['Standard', 'Deluxe', 'Suite'].map((roomType) => (
+          <div key={roomType} className="mt-4">
+            <h4>{roomType} Rooms</h4>
+            <div className="row">
+              {rooms
+                .filter((room) => room.roomType === roomType)
+                .map((room) => (
+                  <div key={room.id} className="col-sm-4 mb-4">
+                    <Card>
+                      <Card.Img variant="top" src={room.imageUrls[0]} />
+                      <Card.Body>
+                        <Card.Title>{room.name}</Card.Title>
+                        <Card.Text>{room.description}</Card.Text>
+                        <Card.Text>
+                          <strong>Price:</strong> R{room.price} <br />
+                          <strong>Capacity:</strong> {room.capacity} people <br />
+                          <strong>Amenities:</strong> {room.amenities}
+                        </Card.Text>
+                        <Button
+                          variant="secondary"
+                          onClick={() => handleEdit(room)}
+                          className="mr-2"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="danger"
+                          onClick={() => handleDelete(room.id)}
+                        >
+                          Delete
+                        </Button>
+                      </Card.Body>
+                    </Card>
+                  </div>
                 ))}
-              </div>
-            )}
-            <Button
-              style={styles.editButton}
-              onClick={() => handleEdit(room)}
-            >
-              Edit
-            </Button>
-            <Button
-              style={styles.deleteButton}
-              onClick={() => handleDelete(room.id)}
-            >
-              Delete
-            </Button>
+            </div>
           </div>
         ))}
       </div>
-    </div>
+    </Container>
   );
 };
 

@@ -1,88 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';  
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAccommodations } from '../../redux/accommodationsSlice';
 import { fetchRooms } from '../../redux/roomSlice';
-
-// Inline styles
-const styles = {
-  dashboardContainer: {
-    backgroundColor: '#f8f9fa',
-    color: '#333',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-    maxWidth: '1200px',
-    margin: 'auto',
-  },
-  dashboardTitle: {
-    color: '#004aad',
-    textAlign: 'center',
-    marginBottom: '30px',
-    fontSize: '2rem',
-    fontWeight: '600',
-  },
-  section: {
-    backgroundColor: '#ffffff',
-    borderRadius: '8px',
-    padding: '20px',
-    marginBottom: '20px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  },
-  list: {
-    listStyle: 'none',
-    padding: '0',
-    margin: '0',
-  },
-  listItem: {
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '1px solid #ddd',
-    padding: '15px 0',
-    transition: 'background-color 0.3s',
-  },
-  listItemHover: {
-    backgroundColor: '#f1f1f1',
-  },
-  lastListItem: {
-    borderBottom: 'none',
-  },
-  image: {
-    width: '120px',
-    height: '90px',
-    objectFit: 'cover',
-    borderRadius: '6px',
-    marginRight: '20px',
-  },
-  details: {
-    flex: '1',
-  },
-  loading: {
-    textAlign: 'center',
-    fontSize: '20px',
-    color: '#004aad',
-  },
-  error: {
-    textAlign: 'center',
-    fontSize: '20px',
-    color: '#e74c3c',
-  },
-  button: {
-    display: 'inline-block',
-    padding: '10px 20px',
-    margin: '10px 0',
-    borderRadius: '5px',
-    border: 'none',
-    backgroundColor: '#004aad',
-    color: '#ffffff',
-    fontSize: '16px',
-    cursor: 'pointer',
-    textAlign: 'center',
-    textDecoration: 'none',
-  },
-  buttonHover: {
-    backgroundColor: '#003a8c',
-  },
-};
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS } from 'chart.js/auto';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -94,53 +16,81 @@ const AdminDashboard = () => {
     dispatch(fetchRooms());
   }, [dispatch]);
 
-  if (accommodationsLoading || roomsLoading) return <p style={styles.loading}>Loading...</p>;
-  if (accommodationsError || roomsError) return <p style={styles.error}>Error: {accommodationsError || roomsError}</p>;
+  if (accommodationsLoading || roomsLoading) return <p>Loading...</p>;
+  if (accommodationsError || roomsError) return <p>Error: {accommodationsError || roomsError}</p>;
+
+  const chartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+      {
+        label: 'Room Occupancy',
+        data: [65, 59, 80, 81, 56, 55],
+        borderColor: 'rgba(0, 74, 173, 0.7)',
+        fill: false,
+      },
+    ],
+  };
+
+  // Group rooms by roomType
+  const roomCategories = rooms.reduce((acc, room) => {
+    if (!acc[room.roomType]) {
+      acc[room.roomType] = [];
+    }
+    acc[room.roomType].push(room);
+    return acc;
+  }, {});
 
   return (
-    <div style={styles.dashboardContainer}>
-      <h2 style={styles.dashboardTitle}>Admin Dashboard</h2>
-      
-      <section style={styles.section}>
-        <h3 style={{ color: '#004aad', borderBottom: '2px solid #004aad', paddingBottom: '10px', marginBottom: '20px' }}>Accommodations</h3>
-        <ul style={styles.list}>
-          {accommodations.map(accommodation => (
-            <li
-              key={accommodation.id}
-              style={{ ...styles.listItem, ...(accommodations.indexOf(accommodation) === accommodations.length - 1 ? styles.lastListItem : {}), transition: 'background-color 0.3s' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f1f1f1'}
-              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'white'}
-            >
-              <img src={accommodation.mainImage} alt={`Image of ${accommodation.name}`} style={styles.image} />
-              <div style={styles.details}>
-                <h4>{accommodation.name}</h4>
-                <p>{accommodation.description}</p>
+    <div className="container my-5 p-4 bg-light rounded shadow">
+      <h2 className="text-center text-primary mb-4">Admin Dashboard</h2>
+
+      <section className="mb-4 p-3 bg-white rounded shadow-sm">
+        <h3 className="text-primary border-bottom pb-2 mb-3">Accommodations</h3>
+        <div className="row">
+          {accommodations.map((accommodation) => (
+            <div key={accommodation.id} className="col-md-4 mb-4">
+              <div className="card shadow-sm">
+                <img src={accommodation.mainImage} alt={`Image of ${accommodation.name}`} className="card-img-top" />
+                <div className="card-body">
+                  <h5 className="card-title">{accommodation.name}</h5>
+                  <p className="card-text">{accommodation.description}</p>
+                </div>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
 
-      <section style={styles.section}>
-        <h3 style={{ color: '#004aad', borderBottom: '2px solid #004aad', paddingBottom: '10px', marginBottom: '20px' }}>Rooms</h3>
-        <ul style={styles.list}>
-          {rooms.map(room => (
-            <li
-              key={room.id}
-              style={{ ...styles.listItem, ...(rooms.indexOf(room) === rooms.length - 1 ? styles.lastListItem : {}), transition: 'background-color 0.3s' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f1f1f1'}
-              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'white'}
-            >
-              <div style={styles.details}>
-                <h4>{room.name}</h4>
-                <p>{room.description}</p>
-               
-              </div>
-            </li>
-          ))}
-        </ul>
+      <section className="mb-4 p-3 bg-white rounded shadow-sm">
+        <h3 className="text-primary border-bottom pb-2 mb-3">Rooms</h3>
+        {Object.keys(roomCategories).map((roomType) => (
+          <div key={roomType} className="mb-4">
+            <h4 className="text-primary">{roomType} Rooms</h4>
+            <div className="row">
+              {roomCategories[roomType].map((room) => (
+                <div key={room.id} className="col-md-4 mb-4">
+                  <div className="card shadow-sm">
+                    <img src={room.imageUrls[0]} alt={`Image of ${room.name}`} className="card-img-top" />
+                    <div className="card-body">
+                      <h5 className="card-title">{room.name}</h5>
+                      <p className="card-text">{room.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
+      <section className="mb-4 p-3 bg-white rounded shadow-sm">
+        <h3 className="text-primary border-bottom pb-2 mb-3">Room Occupancy Trends</h3>
+        <Line data={chartData} />
+      </section>
+
+      <div className="text-center">
+        <a href="#" className="btn btn-primary px-5 py-2">Manage Rooms</a>
+      </div>
     </div>
   );
 };
