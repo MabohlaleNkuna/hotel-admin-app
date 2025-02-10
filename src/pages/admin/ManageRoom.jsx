@@ -82,7 +82,7 @@ const ManageRoom = () => {
         amenities = 'Enhanced amenities, Free WiFi, Mini-bar';
         break;
       case 'Suite':
-        amenities = 'Luxurious amenities, Free WiFi, Mini-bar, Jacuzzi';
+        amenities = 'Luxurious amenities, Free WiFi, Mini-bar, Jacuzzi,King-sized bed,Air conditioning';
         break;
       default:
         amenities = '';

@@ -1,7 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { db, storage } from '../firebaseConfig.js';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from 'firebase/firestore'; // Added getDoc import
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from 'firebase/firestore';
+
+const MAX_IMAGE_SIZE = 3 * 1024 * 1024; // 3MB
+
+const validateImageSize = (imageFile) => {
+  if (imageFile.size > MAX_IMAGE_SIZE) {
+    throw new Error('Image size exceeds the 3MB limit');
+  }
+};
 
 // Async Thunks
 export const fetchRooms = createAsyncThunk('rooms/fetchRooms', async () => {
@@ -24,6 +32,7 @@ export const addRoom = createAsyncThunk('rooms/addRoom', async (roomData) => {
   const imageUrls = [];
 
   for (const imageFile of imageFiles) {
+    validateImageSize(imageFile); // Validate image size
     const storageRef = ref(storage, `rooms/${imageFile.name}`);
     await uploadBytes(storageRef, imageFile);
     const imageUrl = await getDownloadURL(storageRef);
@@ -44,16 +53,20 @@ export const addRoom = createAsyncThunk('rooms/addRoom', async (roomData) => {
 });
 
 export const editRoom = createAsyncThunk('rooms/editRoom', async ({ id, updatedData, imageFiles }) => {
-  const imageUrls = updatedData.imageUrls || [];
+  let imageUrls = updatedData.imageUrls || [];
+
   if (imageFiles && imageFiles.length > 0) {
     for (const imageFile of imageFiles) {
+      validateImageSize(imageFile); // Validate image size
       const storageRef = ref(storage, `rooms/${imageFile.name}`);
       await uploadBytes(storageRef, imageFile);
       const imageUrl = await getDownloadURL(storageRef);
       imageUrls.push(imageUrl);
     }
   }
+
   await updateDoc(doc(db, 'rooms', id), { ...updatedData, imageUrls });
+
   return { id, ...updatedData, imageUrls };
 });
 
