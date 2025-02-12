@@ -1,24 +1,24 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { getStorage } from "firebase/storage";
-import { getFunctions } from "firebase/functions"; 
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
+import { getFunctions } from 'firebase/functions'; 
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_APP_ID,
-  measurementId: import.meta.env.VITE_MEASUREMENT_ID
+  apiKey: "AIzaSyCl4u9Z-okoAj34XzkMNVNVJ5gzhFn567o",
+  authDomain: "hotel-booking-app-25eb5.firebaseapp.com",
+  projectId: "hotel-booking-app-25eb5",
+  storageBucket: "hotel-booking-app-25eb5.appspot.com",
+  messagingSenderId: "449659420472",
+  appId: "1:449659420472:web:f3a653bb5ac550dcd58bcd",
+  measurementId: "G-8NYW3Y8F7D"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
-const functions = getFunctions(app);
+const functions = getFunctions(app); 
 
-export { db, auth, storage, functions };
+export { db, auth, storage, functions }; 
