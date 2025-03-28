@@ -3,7 +3,7 @@ import { db, storage } from '../firebaseConfig.js';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from 'firebase/firestore';
 
-const MAX_IMAGE_SIZE = 3 * 1024 * 1024; // 3MB
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; 
 
 const validateImageSize = (imageFile) => {
   if (imageFile.size > MAX_IMAGE_SIZE) {
